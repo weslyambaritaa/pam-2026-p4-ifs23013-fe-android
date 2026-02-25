@@ -7,6 +7,7 @@ import org.delcom.pam_p4_ifs23013.network.data.ResponseMessage
 import org.delcom.pam_p4_ifs23013.network.animals.data.ResponseAnimal
 import org.delcom.pam_p4_ifs23013.network.animals.data.ResponseAnimalAdd
 import org.delcom.pam_p4_ifs23013.network.animals.data.ResponseAnimals
+import org.delcom.pam_p4_ifs23013.network.plants.data.ResponseProfile
 
 class AnimalRepository (private val animalApiService: AnimalApiService): IAnimalRepository {
     override suspend fun getProfile(): ResponseMessage<ResponseProfile?> {

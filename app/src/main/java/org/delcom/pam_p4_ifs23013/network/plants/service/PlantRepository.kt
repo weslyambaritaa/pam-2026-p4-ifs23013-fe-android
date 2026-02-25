@@ -7,40 +7,68 @@ import org.delcom.pam_p4_ifs23013.network.data.ResponseMessage
 import org.delcom.pam_p4_ifs23013.network.plants.data.ResponsePlant
 import org.delcom.pam_p4_ifs23013.network.plants.data.ResponsePlantAdd
 import org.delcom.pam_p4_ifs23013.network.plants.data.ResponsePlants
-import org.delcom.pam_p4_ifs23013.network.data.ResponseProfile
+import org.delcom.pam_p4_ifs23013.network.plants.data.ResponseProfile
 
-class PlantRepository(private val plantApiService: PlantApiService) : IPlantRepository {
+class PlantRepository (private val plantApiService: PlantApiService): IPlantRepository {
     override suspend fun getProfile(): ResponseMessage<ResponseProfile?> {
-        return SuspendHelper.safeApiCall { plantApiService.getProfile() }
+        return SuspendHelper.safeApiCall {
+            plantApiService.getProfile()
+        }
     }
 
     override suspend fun getAllPlants(search: String?): ResponseMessage<ResponsePlants?> {
-        return SuspendHelper.safeApiCall { plantApiService.getAllPlants(search) }
+        return SuspendHelper.safeApiCall {
+            plantApiService.getAllPlants(search)
+        }
     }
 
     override suspend fun postPlant(
-        nama: RequestBody, deskripsi: RequestBody, manfaat: RequestBody,
-        efekSamping: RequestBody, file: MultipartBody.Part
+        nama: RequestBody,
+        deskripsi: RequestBody,
+        manfaat: RequestBody,
+        efekSamping: RequestBody,
+        file: MultipartBody.Part
     ): ResponseMessage<ResponsePlantAdd?> {
         return SuspendHelper.safeApiCall {
-            plantApiService.postPlant(nama, deskripsi, manfaat, efekSamping, file)
+            plantApiService.postPlant(
+                nama = nama,
+                deskripsi = deskripsi,
+                manfaat = manfaat,
+                efekSamping = efekSamping,
+                file = file
+            )
         }
     }
 
     override suspend fun getPlantById(plantId: String): ResponseMessage<ResponsePlant?> {
-        return SuspendHelper.safeApiCall { plantApiService.getPlantById(plantId) }
+        return SuspendHelper.safeApiCall {
+            plantApiService.getPlantById(plantId)
+        }
     }
 
     override suspend fun putPlant(
-        plantId: String, nama: RequestBody, deskripsi: RequestBody,
-        manfaat: RequestBody, efekSamping: RequestBody, file: MultipartBody.Part?
+        plantId: String,
+        nama: RequestBody,
+        deskripsi: RequestBody,
+        manfaat: RequestBody,
+        efekSamping: RequestBody,
+        file: MultipartBody.Part?
     ): ResponseMessage<String?> {
         return SuspendHelper.safeApiCall {
-            plantApiService.putPlant(plantId, nama, deskripsi, manfaat, efekSamping, file)
+            plantApiService.putPlant(
+                plantId = plantId,
+                nama = nama,
+                deskripsi = deskripsi,
+                manfaat = manfaat,
+                efekSamping = efekSamping,
+                file = file
+            )
         }
     }
 
     override suspend fun deletePlant(plantId: String): ResponseMessage<String?> {
-        return SuspendHelper.safeApiCall { plantApiService.deletePlant(plantId) }
+        return SuspendHelper.safeApiCall {
+            plantApiService.deletePlant(plantId)
+        }
     }
 }

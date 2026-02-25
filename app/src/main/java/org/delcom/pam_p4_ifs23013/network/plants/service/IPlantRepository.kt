@@ -6,6 +6,7 @@ import org.delcom.pam_p4_ifs23013.network.data.ResponseMessage
 import org.delcom.pam_p4_ifs23013.network.plants.data.ResponsePlant
 import org.delcom.pam_p4_ifs23013.network.plants.data.ResponsePlantAdd
 import org.delcom.pam_p4_ifs23013.network.plants.data.ResponsePlants
+import org.delcom.pam_p4_ifs23013.network.plants.data.ResponseProfile
 
 interface IPlantRepository {
     // Ambil profile developer
@@ -21,7 +22,7 @@ interface IPlantRepository {
         nama: RequestBody,
         deskripsi: RequestBody,
         manfaat: RequestBody,
-        efekSamoping: RequestBody,
+        efekSamping: RequestBody,
         file: MultipartBody.Part
     ): ResponseMessage<ResponsePlantAdd?>
 
@@ -37,7 +38,7 @@ interface IPlantRepository {
         nama: RequestBody,
         deskripsi: RequestBody,
         manfaat: RequestBody,
-        efekSamoping: RequestBody,
+        efekSamping: RequestBody,
         file: MultipartBody.Part? = null
     ): ResponseMessage<String?>
 

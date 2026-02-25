@@ -12,6 +12,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.delcom.pam_p4_ifs23013.network.animals.data.ResponseAnimalData
 import org.delcom.pam_p4_ifs23013.network.animals.service.IAnimalRepository
+import org.delcom.pam_p4_ifs23013.network.plants.data.ResponseProfile
 import javax.inject.Inject
 
 sealed interface ProfileUIState {

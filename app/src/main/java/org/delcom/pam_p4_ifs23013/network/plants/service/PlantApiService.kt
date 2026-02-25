@@ -6,6 +6,7 @@ import org.delcom.pam_p4_ifs23013.network.data.ResponseMessage
 import org.delcom.pam_p4_ifs23013.network.plants.data.ResponsePlant
 import org.delcom.pam_p4_ifs23013.network.plants.data.ResponsePlantAdd
 import org.delcom.pam_p4_ifs23013.network.plants.data.ResponsePlants
+import org.delcom.pam_p4_ifs23013.network.plants.data.ResponseProfile
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
