@@ -12,12 +12,12 @@ interface IAnimalRepository {
     // Ambil profile developer
     suspend fun getProfile(): ResponseMessage<ResponseProfile?>
 
-    // Ambil semua data tumbuhan
+    // Ambil semua data hewan
     suspend fun getAllAnimals(
         search: String? = null
     ): ResponseMessage<ResponseAnimals?>
 
-    // Tambah data tumbuhan
+    // Tambah data hewan
     suspend fun postAnimal(
         nama: RequestBody,
         deskripsi: RequestBody,
@@ -26,13 +26,13 @@ interface IAnimalRepository {
         file: MultipartBody.Part
     ): ResponseMessage<ResponseAnimalAdd?>
 
-    // Ambil data tumbuhan berdasarkan ID
+    // Ambil data hewan berdasarkan ID
     suspend fun getAnimalById(
         animalId: String
     ): ResponseMessage<ResponseAnimal?>
 
 
-    // Ubah data tumbuhan
+    // Ubah data hewan
     suspend fun putAnimal(
         animalId: String,
         nama: RequestBody,

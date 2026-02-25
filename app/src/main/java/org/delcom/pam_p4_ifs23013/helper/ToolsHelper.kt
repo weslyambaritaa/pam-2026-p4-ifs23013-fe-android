@@ -11,8 +11,8 @@ import org.delcom.pam_p4_ifs23013.BuildConfig
 import java.io.File
 
 object ToolsHelper {
-    fun getPlantImageUrl(plantId: String): String{
-        return "${BuildConfig.BASE_URL_PANTS_API}plants/${plantId}/image"
+    fun getAnimalImageUrl(animalId: String): String{
+        return "${BuildConfig.BASE_URL_PANTS_API}animals/${animalId}/image"
     }
 
     fun getProfilePhotoUrl(): String{

@@ -58,7 +58,7 @@ fun HomeUI(){
         ) {
             Text(
                 style = MaterialTheme.typography.headlineMedium,
-                text = "\uD83C\uDF33 Delcom Plants \uD83C\uDF33",
+                text = "\uD83C\uDF33 Delcom Animals \uD83C\uDF33",
                 color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier

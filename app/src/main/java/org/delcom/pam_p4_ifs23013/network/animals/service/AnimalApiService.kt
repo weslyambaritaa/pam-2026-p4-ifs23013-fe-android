@@ -21,13 +21,13 @@ interface AnimalApiService {
     @GET("profile")
     suspend fun getProfile(): ResponseMessage<ResponseProfile?>
 
-    // Ambil semua data tumbuhan
+    // Ambil semua data hewan
     @GET("animals")
     suspend fun getAllAnimals(
         @Query("search") search: String? = null
     ): ResponseMessage<ResponseAnimals?>
 
-    // Tambah data tumbuhan
+    // Tambah data hewan
     @Multipart
     @POST("/animals")
     suspend fun postAnimal(
@@ -38,14 +38,14 @@ interface AnimalApiService {
         @Part file: MultipartBody.Part
     ): ResponseMessage<ResponseAnimalAdd?>
 
-    // Ambil data tumbuhan berdasarkan ID
+    // Ambil data hewan berdasarkan ID
     @GET("animals/{animalId}")
     suspend fun getAnimalById(
         @Path("animalId") animalId: String
     ): ResponseMessage<ResponseAnimal?>
 
 
-    // Ubah data tumbuhan
+    // Ubah data hewan
     @Multipart
     @PUT("/animals/{animalId}")
     suspend fun putAnimal(
@@ -57,7 +57,7 @@ interface AnimalApiService {
         @Part file: MultipartBody.Part? = null
     ): ResponseMessage<String?>
 
-    // Hapus data tumbuhan
+    // Hapus data hewan
     @DELETE("animals/{animalId}")
     suspend fun deleteAnimal(
         @Path("animalId") animalId: String

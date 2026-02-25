@@ -5,17 +5,17 @@ import androidx.compose.ui.graphics.Color
 /* =========================
    BRAND COLORS (PLANT THEME)
    ========================= */
-val PlantGreen = Color(0xFF2E7D32)      // Hijau natural untuk tanaman
-val PlantGreenLight = Color(0xFF4CAF50)  // Hijau lebih terang
-val PlantGreenDark = Color(0xFF1B5E20)   // Hijau lebih gelap
-val PlantAccent = Color(0xFF8BC34A)      // Hijau cerah sebagai aksen
+val AnimalGreen = Color(0xFF2E7D32)      // Hijau natural untuk tanaman
+val AnimalGreenLight = Color(0xFF4CAF50)  // Hijau lebih terang
+val AnimalGreenDark = Color(0xFF1B5E20)   // Hijau lebih gelap
+val AnimalAccent = Color(0xFF8BC34A)      // Hijau cerah sebagai aksen
 
 val DelcomYellow = Color(0xFFFFC107)
 val DelcomYellowSoft = Color(0xFFFFE082)
 /* =========================
    LIGHT THEME (PLANT THEME)
    ========================= */
-val md_theme_light_primary = PlantGreen
+val md_theme_light_primary = AnimalGreen
 val md_theme_light_onPrimary = Color.White
 
 val md_theme_light_primaryContainer = Color(0xFFC8E6C9)
@@ -27,7 +27,7 @@ val md_theme_light_onSecondary = Color(0xFF2A1F00)
 val md_theme_light_secondaryContainer = DelcomYellowSoft
 val md_theme_light_onSecondaryContainer = Color(0xFF2A1F00)
 
-val md_theme_light_tertiary = PlantGreenDark
+val md_theme_light_tertiary = AnimalGreenDark
 val md_theme_light_onTertiary = Color.White
 
 val md_theme_light_error = Color(0xFFBA1A1A)
@@ -47,14 +47,14 @@ val md_theme_light_onSurfaceVariant = Color(0xFF444944)
 val md_theme_light_outline = Color(0xFF747C74)
 val md_theme_light_inverseOnSurface = Color(0xFFF1F1F1)
 val md_theme_light_inverseSurface = Color(0xFF1E1E1E)
-val md_theme_light_inversePrimary = PlantGreenDark
+val md_theme_light_inversePrimary = AnimalGreenDark
 val md_theme_light_shadow = Color.Black
-val md_theme_light_surfaceTint = PlantGreen
+val md_theme_light_surfaceTint = AnimalGreen
 
 /* =========================
    DARK THEME (PLANT THEME)
    ========================= */
-val md_theme_dark_primary = PlantGreenLight
+val md_theme_dark_primary = AnimalGreenLight
 val md_theme_dark_onPrimary = Color.Black
 
 val md_theme_dark_primaryContainer = Color(0xFF1A4F1D)
@@ -66,7 +66,7 @@ val md_theme_dark_onSecondary = Color(0xFF2A1F00)
 val md_theme_dark_secondaryContainer = Color(0xFF5A4600)
 val md_theme_dark_onSecondaryContainer = DelcomYellowSoft
 
-val md_theme_dark_tertiary = PlantAccent
+val md_theme_dark_tertiary = AnimalAccent
 val md_theme_dark_onTertiary = Color.Black
 
 val md_theme_dark_error = Color(0xFFFFB4AB)
@@ -86,6 +86,6 @@ val md_theme_dark_onSurfaceVariant = Color(0xFFC4C7C4)
 val md_theme_dark_outline = Color(0xFF8E918E)
 val md_theme_dark_inverseOnSurface = Color(0xFF121212)
 val md_theme_dark_inverseSurface = Color(0xFFEAEAEA)
-val md_theme_dark_inversePrimary = PlantGreen
+val md_theme_dark_inversePrimary = AnimalGreen
 val md_theme_dark_shadow = Color.Black
-val md_theme_dark_surfaceTint = PlantGreenLight
+val md_theme_dark_surfaceTint = AnimalGreenLight

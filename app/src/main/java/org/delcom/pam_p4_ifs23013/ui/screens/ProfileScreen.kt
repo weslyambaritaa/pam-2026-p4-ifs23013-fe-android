@@ -40,35 +40,35 @@ import coil.compose.AsyncImage
 import org.delcom.pam_p4_ifs23013.R
 import org.delcom.pam_p4_ifs23013.helper.RouteHelper
 import org.delcom.pam_p4_ifs23013.helper.ToolsHelper
-import org.delcom.pam_p4_ifs23013.network.plants.data.ResponseProfile
+import org.delcom.pam_p4_ifs23013.network.animals.data.ResponseProfile
 import org.delcom.pam_p4_ifs23013.ui.components.BottomNavComponent
 import org.delcom.pam_p4_ifs23013.ui.components.LoadingUI
 import org.delcom.pam_p4_ifs23013.ui.components.TopAppBarComponent
 import org.delcom.pam_p4_ifs23013.ui.theme.DelcomTheme
-import org.delcom.pam_p4_ifs23013.ui.viewmodels.PlantViewModel
+import org.delcom.pam_p4_ifs23013.ui.viewmodels.AnimalViewModel
 import org.delcom.pam_p4_ifs23013.ui.viewmodels.ProfileUIState
 
 @Composable
 fun ProfileScreen(
     navController: NavHostController,
-    plantViewModel: PlantViewModel
+    animalViewModel: AnimalViewModel
 ) {
     // Ambil data dari viewmodel
-    val uiStatePlant by plantViewModel.uiState.collectAsState()
+    val uiStateAnimal by animalViewModel.uiState.collectAsState()
 
     var isLoading by remember { mutableStateOf(false) }
     var profile by remember { mutableStateOf<ResponseProfile?>(null) }
 
     LaunchedEffect(Unit) {
         isLoading = true
-        plantViewModel.getProfile()
+        animalViewModel.getProfile()
     }
 
-    LaunchedEffect(uiStatePlant.profile) {
-        if(uiStatePlant.profile !is ProfileUIState.Loading){
+    LaunchedEffect(uiStateAnimal.profile) {
+        if(uiStateAnimal.profile !is ProfileUIState.Loading){
             isLoading = false
-            if(uiStatePlant.profile is ProfileUIState.Success){
-                profile = (uiStatePlant.profile as ProfileUIState.Success).data
+            if(uiStateAnimal.profile is ProfileUIState.Success){
+                profile = (uiStateAnimal.profile as ProfileUIState.Success).data
             }else{
                 RouteHelper.back(navController)
             }

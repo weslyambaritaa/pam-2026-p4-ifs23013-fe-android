@@ -53,7 +53,7 @@ sealed class MenuBottomNav(
     val iconActive: ImageVector,
 ) {
     object Home : MenuBottomNav(ConstHelper.RouteNames.Home.path, "Home", Icons.Outlined.Home, Icons.Filled.Home)
-    object Plants : MenuBottomNav(ConstHelper.RouteNames.Plants.path, "Plants", Icons.Outlined.Nature, Icons.Filled.Nature)
+    object Animals : MenuBottomNav(ConstHelper.RouteNames.Animals.path, "Animals", Icons.Outlined.Nature, Icons.Filled.Nature)
     object Profile : MenuBottomNav(ConstHelper.RouteNames.Profile.path, "Profile", Icons.Outlined.Person, Icons.Filled.Person)
 }
 
@@ -61,7 +61,7 @@ sealed class MenuBottomNav(
 fun BottomNavComponent(navController: NavHostController) {
     val items: List<MenuBottomNav> = listOf(
         MenuBottomNav.Home,
-        MenuBottomNav.Plants,
+        MenuBottomNav.Animals,
         MenuBottomNav.Profile,
     )
 

@@ -8,12 +8,12 @@ import androidx.activity.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import org.delcom.pam_p4_ifs23013.ui.UIApp
 import org.delcom.pam_p4_ifs23013.ui.theme.DelcomTheme
-import org.delcom.pam_p4_ifs23013.ui.viewmodels.PlantViewModel
+import org.delcom.pam_p4_ifs23013.ui.viewmodels.AnimalViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val plantViewModel: PlantViewModel by viewModels()
+    private val animalViewModel: AnimalViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             DelcomTheme {
                 UIApp(
-                    plantViewModel = plantViewModel
+                    animalViewModel = animalViewModel
                 )
             }
         }

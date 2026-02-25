@@ -19,18 +19,18 @@ import androidx.navigation.navArgument
 import org.delcom.pam_p4_ifs23013.helper.ConstHelper
 import org.delcom.pam_p4_ifs23013.ui.components.CustomSnackbar
 import org.delcom.pam_p4_ifs23013.ui.screens.HomeScreen
-import org.delcom.pam_p4_ifs23013.ui.screens.PlantsAddScreen
-import org.delcom.pam_p4_ifs23013.ui.screens.PlantsDetailScreen
-import org.delcom.pam_p4_ifs23013.ui.screens.PlantsEditScreen
-import org.delcom.pam_p4_ifs23013.ui.screens.PlantsScreen
+import org.delcom.pam_p4_ifs23013.ui.screens.AnimalsAddScreen
+import org.delcom.pam_p4_ifs23013.ui.screens.AnimalsDetailScreen
+import org.delcom.pam_p4_ifs23013.ui.screens.AnimalsEditScreen
+import org.delcom.pam_p4_ifs23013.ui.screens.AnimalsScreen
 import org.delcom.pam_p4_ifs23013.ui.screens.ProfileScreen
-import org.delcom.pam_p4_ifs23013.ui.viewmodels.PlantViewModel
+import org.delcom.pam_p4_ifs23013.ui.viewmodels.AnimalViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun UIApp(
     navController: NavHostController = rememberNavController(),
-    plantViewModel: PlantViewModel
+    animalViewModel: AnimalViewModel
 ) {
     // Inisialisasi SnackbarHostState
     val snackbarHostState = remember { SnackbarHostState() }
@@ -63,62 +63,62 @@ fun UIApp(
             ) { _ ->
                 ProfileScreen(
                     navController = navController,
-                    plantViewModel = plantViewModel
+                    animalViewModel = animalViewModel
                 )
             }
 
-            // Plants
+            // Animals
             composable(
-                route = ConstHelper.RouteNames.Plants.path,
+                route = ConstHelper.RouteNames.Animals.path,
             ) { _ ->
-                PlantsScreen(
+                AnimalsScreen(
                     navController = navController,
-                    plantViewModel = plantViewModel
+                    animalViewModel = animalViewModel
                 )
             }
 
-            // Plants Add
+            // Animals Add
             composable(
-                route = ConstHelper.RouteNames.PlantsAdd.path,
+                route = ConstHelper.RouteNames.AnimalsAdd.path,
             ) { _ ->
-                PlantsAddScreen(
+                AnimalsAddScreen(
                     navController = navController,
                     snackbarHost = snackbarHostState,
-                    plantViewModel = plantViewModel
+                    animalViewModel = animalViewModel
                 )
             }
 
-            // Plants Detail
+            // Animals Detail
             composable(
-                route = ConstHelper.RouteNames.PlantsDetail.path,
+                route = ConstHelper.RouteNames.AnimalsDetail.path,
                 arguments = listOf(
-                    navArgument("plantId") { type = NavType.StringType },
+                    navArgument("animalId") { type = NavType.StringType },
                 )
             ) { backStackEntry ->
-                val plantId = backStackEntry.arguments?.getString("plantId") ?: ""
+                val animalId = backStackEntry.arguments?.getString("animalId") ?: ""
 
-                PlantsDetailScreen(
+                AnimalsDetailScreen(
                     navController = navController,
                     snackbarHost = snackbarHostState,
-                    plantViewModel = plantViewModel,
-                    plantId = plantId
+                    animalViewModel = animalViewModel,
+                    animalId = animalId
                 )
             }
 
-            // Plants Edit
+            // Animals Edit
             composable(
-                route = ConstHelper.RouteNames.PlantsEdit.path,
+                route = ConstHelper.RouteNames.AnimalsEdit.path,
                 arguments = listOf(
-                    navArgument("plantId") { type = NavType.StringType },
+                    navArgument("animalId") { type = NavType.StringType },
                 )
             ) { backStackEntry ->
-                val plantId = backStackEntry.arguments?.getString("plantId") ?: ""
+                val animalId = backStackEntry.arguments?.getString("animalId") ?: ""
 
-                PlantsEditScreen(
+                AnimalsEditScreen(
                     navController = navController,
                     snackbarHost = snackbarHostState,
-                    plantViewModel = plantViewModel,
-                    plantId = plantId
+                    animalViewModel = animalViewModel,
+                    animalId = animalId
                 )
             }
         }

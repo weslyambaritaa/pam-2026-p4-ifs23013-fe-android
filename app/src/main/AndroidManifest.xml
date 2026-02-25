@@ -15,11 +15,11 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/img_logo"
         android:supportsRtl="true"
-        android:theme="@style/Theme.DelcomPlants">
+        android:theme="@style/Theme.DelcomAnimals">
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.DelcomPlants">
+            android:theme="@style/Theme.DelcomAnimals">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
