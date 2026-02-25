@@ -1,5 +1,5 @@
-package org.delcom.pam_p4_ifs23013.network.animals.service
+package org.delcom.pam_p4_ifs23013.network.plants.service
 
-interface IAnimalAppContainer {
-    val animalRepository: IAnimalRepository
+interface IPlantAppContainer {
+    val plantRepository: IPlantRepository
 }

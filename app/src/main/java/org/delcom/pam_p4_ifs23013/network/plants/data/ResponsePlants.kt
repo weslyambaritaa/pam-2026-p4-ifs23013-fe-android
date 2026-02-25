@@ -1,29 +1,29 @@
-package org.delcom.pam_p4_ifs23013.network.animals.data
+package org.delcom.pam_p4_ifs23013.network.plants.data
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponseAnimals (
-    val animals: List<ResponseAnimalData>
+data class ResponsePlants (
+    val plants: List<ResponsePlantData>
 )
 
 @Serializable
-data class ResponseAnimal (
-    val animal: ResponseAnimalData
+data class ResponsePlant (
+    val plant: ResponsePlantData
 )
 
 @Serializable
-data class ResponseAnimalAdd (
-    val animalId: String
+data class ResponsePlantAdd (
+    val plantId: String
 )
 
 @Serializable
-data class ResponseAnimalData(
+data class ResponsePlantData(
     val id: String,
     val nama: String,
     val deskripsi: String,
-    val habitat: String,
-    val makananFavorit: String,
+    val manfaat: String,
+    val efekSamping: String,
     val createdAt: String,
     val updatedAt: String
 )

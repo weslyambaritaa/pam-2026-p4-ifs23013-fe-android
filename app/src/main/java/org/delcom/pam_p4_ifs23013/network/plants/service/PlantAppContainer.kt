@@ -1,4 +1,4 @@
-package org.delcom.pam_p4_ifs23013.network.animals.service
+package org.delcom.pam_p4_ifs23013.network.plants.service
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import org.delcom.pam_p4_ifs23013.BuildConfig
 import java.util.concurrent.TimeUnit
 
-class AnimalAppContainer: IAnimalAppContainer {
+class PlantAppContainer: IPlantAppContainer {
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor.Level.BASIC
@@ -32,11 +32,11 @@ class AnimalAppContainer: IAnimalAppContainer {
         .client(okHttpClient)
         .build()
 
-    private val retrofitService: AnimalApiService by lazy {
-        retrofit.create(AnimalApiService::class.java)
+    private val retrofitService: PlantApiService by lazy {
+        retrofit.create(PlantApiService::class.java)
     }
 
-    override val animalRepository: IAnimalRepository by lazy {
-        AnimalRepository(retrofitService)
+    override val plantRepository: IPlantRepository by lazy {
+        PlantRepository(retrofitService)
     }
 }

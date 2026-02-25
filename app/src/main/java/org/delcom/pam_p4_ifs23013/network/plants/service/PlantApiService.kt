@@ -1,11 +1,11 @@
-package org.delcom.pam_p4_ifs23013.network.animals.service
+package org.delcom.pam_p4_ifs23013.network.plants.service
 
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.delcom.pam_p4_ifs23013.network.data.ResponseMessage
-import org.delcom.pam_p4_ifs23013.network.animals.data.ResponseAnimal
-import org.delcom.pam_p4_ifs23013.network.animals.data.ResponseAnimalAdd
-import org.delcom.pam_p4_ifs23013.network.animals.data.ResponseAnimals
+import org.delcom.pam_p4_ifs23013.network.plants.data.ResponsePlant
+import org.delcom.pam_p4_ifs23013.network.plants.data.ResponsePlantAdd
+import org.delcom.pam_p4_ifs23013.network.plants.data.ResponsePlants
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
@@ -15,50 +15,50 @@ import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface AnimalApiService {
+interface PlantApiService {
     // Ambil profile developer
     @GET("profile")
     suspend fun getProfile(): ResponseMessage<ResponseProfile?>
 
     // Ambil semua data tumbuhan
-    @GET("animals")
-    suspend fun getAllAnimals(
+    @GET("plants")
+    suspend fun getAllPlants(
         @Query("search") search: String? = null
-    ): ResponseMessage<ResponseAnimals?>
+    ): ResponseMessage<ResponsePlants?>
 
     // Tambah data tumbuhan
     @Multipart
-    @POST("/animals")
-    suspend fun postAnimal(
+    @POST("/plants")
+    suspend fun postPlant(
         @Part("nama") nama: RequestBody,
         @Part("deskripsi") deskripsi: RequestBody,
-        @Part("habitat") habitat: RequestBody,
-        @Part("makananFavorit") makananFavorit: RequestBody,
+        @Part("manfaat") manfaat: RequestBody,
+        @Part("efekSamping") efekSamping: RequestBody,
         @Part file: MultipartBody.Part
-    ): ResponseMessage<ResponseAnimalAdd?>
+    ): ResponseMessage<ResponsePlantAdd?>
 
     // Ambil data tumbuhan berdasarkan ID
-    @GET("animals/{animalId}")
-    suspend fun getAnimalById(
-        @Path("animalId") animalId: String
-    ): ResponseMessage<ResponseAnimal?>
+    @GET("plants/{plantId}")
+    suspend fun getPlantById(
+        @Path("plantId") plantId: String
+    ): ResponseMessage<ResponsePlant?>
 
 
     // Ubah data tumbuhan
     @Multipart
-    @PUT("/animals/{animalId}")
-    suspend fun putAnimal(
-        @Path("animalId") animalId: String,
+    @PUT("/plants/{plantId}")
+    suspend fun putPlant(
+        @Path("plantId") plantId: String,
         @Part("nama") nama: RequestBody,
         @Part("deskripsi") deskripsi: RequestBody,
-        @Part("habitat") habitat: RequestBody,
-        @Part("makananFavorit") makananFavorit: RequestBody,
+        @Part("manfaat") manfaat: RequestBody,
+        @Part("efekSamping") efekSamping: RequestBody,
         @Part file: MultipartBody.Part? = null
     ): ResponseMessage<String?>
 
     // Hapus data tumbuhan
-    @DELETE("animals/{animalId}")
-    suspend fun deleteAnimal(
-        @Path("animalId") animalId: String
+    @DELETE("plants/{plantId}")
+    suspend fun deletePlant(
+        @Path("plantId") plantId: String
     ): ResponseMessage<String?>
 }

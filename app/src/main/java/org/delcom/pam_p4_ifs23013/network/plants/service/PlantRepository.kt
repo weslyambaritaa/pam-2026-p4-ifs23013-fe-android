@@ -1,73 +1,73 @@
-package org.delcom.pam_p4_ifs23013.network.animals.service
+package org.delcom.pam_p4_ifs23013.network.plants.service
 
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.delcom.pam_p4_ifs23013.helper.SuspendHelper
 import org.delcom.pam_p4_ifs23013.network.data.ResponseMessage
-import org.delcom.pam_p4_ifs23013.network.animals.data.ResponseAnimal
-import org.delcom.pam_p4_ifs23013.network.animals.data.ResponseAnimalAdd
-import org.delcom.pam_p4_ifs23013.network.animals.data.ResponseAnimals
+import org.delcom.pam_p4_ifs23013.network.plants.data.ResponsePlant
+import org.delcom.pam_p4_ifs23013.network.plants.data.ResponsePlantAdd
+import org.delcom.pam_p4_ifs23013.network.plants.data.ResponsePlants
 
-class AnimalRepository (private val animalApiService: AnimalApiService): IAnimalRepository {
+class PlantRepository (private val plantApiService: PlantApiService): IPlantRepository {
     override suspend fun getProfile(): ResponseMessage<ResponseProfile?> {
         return SuspendHelper.safeApiCall {
-            animalApiService.getProfile()
+            plantApiService.getProfile()
         }
     }
 
-    override suspend fun getAllAnimals(search: String?): ResponseMessage<ResponseAnimals?> {
+    override suspend fun getAllPlants(search: String?): ResponseMessage<ResponsePlants?> {
         return SuspendHelper.safeApiCall {
-            animalApiService.getAllAnimals(search)
+            plantApiService.getAllPlants(search)
         }
     }
 
-    override suspend fun postAnimal(
+    override suspend fun postPlant(
         nama: RequestBody,
         deskripsi: RequestBody,
         habitat: RequestBody,
-        makananFavorit: RequestBody,
+        efekSamping: RequestBody,
         file: MultipartBody.Part
-    ): ResponseMessage<ResponseAnimalAdd?> {
+    ): ResponseMessage<ResponsePlantAdd?> {
         return SuspendHelper.safeApiCall {
-            animalApiService.postAnimal(
+            plantApiService.postPlant(
                 nama = nama,
                 deskripsi = deskripsi,
                 habitat = habitat,
-                makananFavorit = makananFavorit,
+                efekSamping = efekSamping,
                 file = file
             )
         }
     }
 
-    override suspend fun getAnimalById(animalId: String): ResponseMessage<ResponseAnimal?> {
+    override suspend fun getPlantById(plantId: String): ResponseMessage<ResponsePlant?> {
         return SuspendHelper.safeApiCall {
-            animalApiService.getAnimalById(animalId)
+            plantApiService.getPlantById(plantId)
         }
     }
 
-    override suspend fun putAnimal(
-        animalId: String,
+    override suspend fun putPlant(
+        plantId: String,
         nama: RequestBody,
         deskripsi: RequestBody,
         habitat: RequestBody,
-        makananFavorit: RequestBody,
+        efekSamping: RequestBody,
         file: MultipartBody.Part?
     ): ResponseMessage<String?> {
         return SuspendHelper.safeApiCall {
-            animalApiService.putAnimal(
-                animalId = animalId,
+            plantApiService.putPlant(
+                plantId = plantId,
                 nama = nama,
                 deskripsi = deskripsi,
                 habitat = habitat,
-                makananFavorit = makananFavorit,
+                efekSamping = efekSamping,
                 file = file
             )
         }
     }
 
-    override suspend fun deleteAnimal(animalId: String): ResponseMessage<String?> {
+    override suspend fun deletePlant(plantId: String): ResponseMessage<String?> {
         return SuspendHelper.safeApiCall {
-            animalApiService.deleteAnimal(animalId)
+            plantApiService.deletePlant(plantId)
         }
     }
 }
