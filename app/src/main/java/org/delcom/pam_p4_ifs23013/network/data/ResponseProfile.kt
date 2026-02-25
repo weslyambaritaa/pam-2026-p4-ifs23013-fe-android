@@ -1,4 +1,4 @@
-package org.delcom.pam_p4_ifs23013.network.plants.data
+package org.delcom.pam_p4_ifs23013.network.data
 
 import kotlinx.serialization.Serializable
 
@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class ResponseProfile(
     val username: String,
     val nama: String,
-    val tentang: String,
+    val tentang: String
 )

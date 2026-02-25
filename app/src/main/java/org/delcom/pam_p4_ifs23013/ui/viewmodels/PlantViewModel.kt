@@ -8,255 +8,87 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import org.delcom.pam_p4_ifs23013.network.animals.data.ResponseAnimalData
-import org.delcom.pam_p4_ifs23013.network.animals.service.IAnimalRepository
+import org.delcom.pam_p4_ifs23013.network.plants.data.ResponsePlantData
+import org.delcom.pam_p4_ifs23013.network.data.ResponseProfile
+import org.delcom.pam_p4_ifs23013.network.plants.service.IPlantRepository
 import javax.inject.Inject
 
-sealed interface ProfileUIState {
-    data class Success(val data: ResponseProfile) : ProfileUIState
-    data class Error(val message: String) : ProfileUIState
-    object Loading : ProfileUIState
+sealed interface ProfilePlantUIState {
+    data class Success(val data: ResponseProfile) : ProfilePlantUIState
+    data class Error(val message: String) : ProfilePlantUIState
+    object Loading : ProfilePlantUIState
 }
 
-sealed interface AnimalsUIState {
-    data class Success(val data: List<ResponseAnimalData>) : AnimalsUIState
-    data class Error(val message: String) : AnimalsUIState
-    object Loading : AnimalsUIState
+sealed interface PlantsUIState {
+    data class Success(val data: List<ResponsePlantData>) : PlantsUIState
+    data class Error(val message: String) : PlantsUIState
+    object Loading : PlantsUIState
 }
 
-sealed interface AnimalUIState {
-    data class Success(val data: ResponseAnimalData) : AnimalUIState
-    data class Error(val message: String) : AnimalUIState
-    object Loading : AnimalUIState
+sealed interface PlantUIState {
+    data class Success(val data: ResponsePlantData) : PlantUIState
+    data class Error(val message: String) : PlantUIState
+    object Loading : PlantUIState
 }
 
-sealed interface AnimalActionUIState {
-    data class Success(val message: String) : AnimalActionUIState
-    data class Error(val message: String) : AnimalActionUIState
-    object Loading : AnimalActionUIState
-}
-
-data class UIStateAnimal(
-    val profile: ProfileUIState = ProfileUIState.Loading,
-    val animals: AnimalsUIState = AnimalsUIState.Loading,
-    var animal: AnimalUIState = AnimalUIState.Loading,
-    var animalAction: AnimalActionUIState = AnimalActionUIState.Loading
+data class UIStatePlant(
+    val profile: ProfilePlantUIState = ProfilePlantUIState.Loading,
+    val plants: PlantsUIState = PlantsUIState.Loading,
+    var plant: PlantUIState = PlantUIState.Loading
 )
 
 @HiltViewModel
 @Keep
-class AnimalViewModel @Inject constructor(
-    private val repository: IAnimalRepository,
+class PlantViewModel @Inject constructor(
+    private val repository: IPlantRepository,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(UIStateAnimal())
+    private val _uiState = MutableStateFlow(UIStatePlant())
     val uiState = _uiState.asStateFlow()
 
     fun getProfile() {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    profile = ProfileUIState.Loading
-                )
-            }
+            _uiState.update { it.copy(profile = ProfilePlantUIState.Loading) }
             _uiState.update { it ->
-                val tmpState = runCatching {
-                    repository.getProfile()
-                }.fold(
+                val tmpState = runCatching { repository.getProfile() }.fold(
                     onSuccess = {
-                        if (it.status == "success") {
-                            ProfileUIState.Success(it.data!!)
-                        } else {
-                            ProfileUIState.Error(it.message)
-                        }
+                        if (it.status == "success") ProfilePlantUIState.Success(it.data!!)
+                        else ProfilePlantUIState.Error(it.message)
                     },
-                    onFailure = {
-                        ProfileUIState.Error(it.message ?: "Unknown error")
-                    }
+                    onFailure = { ProfilePlantUIState.Error(it.message ?: "Unknown error") }
                 )
-
-                it.copy(
-                    profile = tmpState
-                )
+                it.copy(profile = tmpState)
             }
         }
     }
 
-    fun getAllAnimals(search: String? = null) {
+    fun getAllPlants(search: String? = null) {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    animals = AnimalsUIState.Loading
-                )
-            }
+            _uiState.update { it.copy(plants = PlantsUIState.Loading) }
             _uiState.update { it ->
-                val tmpState = runCatching {
-                    repository.getAllAnimals(search)
-                }.fold(
+                val tmpState = runCatching { repository.getAllPlants(search) }.fold(
                     onSuccess = {
-                        if (it.status == "success") {
-                            AnimalsUIState.Success(it.data!!.animals)
-                        } else {
-                            AnimalsUIState.Error(it.message)
-                        }
+                        if (it.status == "success") PlantsUIState.Success(it.data!!.plants)
+                        else PlantsUIState.Error(it.message)
                     },
-                    onFailure = {
-                        AnimalsUIState.Error(it.message ?: "Unknown error")
-                    }
+                    onFailure = { PlantsUIState.Error(it.message ?: "Unknown error") }
                 )
-
-                it.copy(
-                    animals = tmpState
-                )
+                it.copy(plants = tmpState)
             }
         }
     }
 
-    fun postAnimal(
-        nama: RequestBody,
-        deskripsi: RequestBody,
-        habitat: RequestBody,
-        makananFavorit: RequestBody,
-        file: MultipartBody.Part
-    ) {
+    fun getPlantById(plantId: String) {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    animalAction = AnimalActionUIState.Loading
-                )
-            }
+            _uiState.update { it.copy(plant = PlantUIState.Loading) }
             _uiState.update { it ->
-                val tmpState = runCatching {
-                    repository.postAnimal(
-                        nama = nama,
-                        deskripsi = deskripsi,
-                        habitat = habitat,
-                        makananFavorit = makananFavorit,
-                        file = file
-                    )
-                }.fold(
+                val tmpState = runCatching { repository.getPlantById(plantId) }.fold(
                     onSuccess = {
-                        if (it.status == "success") {
-                            AnimalActionUIState.Success(it.data!!.animalId)
-                        } else {
-                            AnimalActionUIState.Error(it.message)
-                        }
+                        if (it.status == "success") PlantUIState.Success(it.data!!.plant)
+                        else PlantUIState.Error(it.message)
                     },
-                    onFailure = {
-                        AnimalActionUIState.Error(it.message ?: "Unknown error")
-                    }
+                    onFailure = { PlantUIState.Error(it.message ?: "Unknown error") }
                 )
-
-                it.copy(
-                    animalAction = tmpState
-                )
-            }
-        }
-    }
-
-    fun getAnimalById(animalId: String) {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    animal = AnimalUIState.Loading
-                )
-            }
-            _uiState.update { it ->
-                val tmpState = runCatching {
-                    repository.getAnimalById(animalId)
-                }.fold(
-                    onSuccess = {
-                        if (it.status == "success") {
-                            AnimalUIState.Success(it.data!!.animal)
-                        } else {
-                            AnimalUIState.Error(it.message)
-                        }
-                    },
-                    onFailure = {
-                        AnimalUIState.Error(it.message ?: "Unknown error")
-                    }
-                )
-
-                it.copy(
-                    animal = tmpState
-                )
-            }
-        }
-    }
-
-    fun putAnimal(
-        animalId: String,
-        nama: RequestBody,
-        deskripsi: RequestBody,
-        habitat: RequestBody,
-        makananFavorit: RequestBody,
-        file: MultipartBody.Part?
-    ) {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    animalAction = AnimalActionUIState.Loading
-                )
-            }
-            _uiState.update { it ->
-                val tmpState = runCatching {
-                    repository.putAnimal(
-                        animalId = animalId,
-                        nama = nama,
-                        deskripsi = deskripsi,
-                        habitat = habitat,
-                        makananFavorit = makananFavorit,
-                        file = file
-                    )
-                }.fold(
-                    onSuccess = {
-                        if (it.status == "success") {
-                            AnimalActionUIState.Success(it.message)
-                        } else {
-                            AnimalActionUIState.Error(it.message)
-                        }
-                    },
-                    onFailure = {
-                        AnimalActionUIState.Error(it.message ?: "Unknown error")
-                    }
-                )
-
-                it.copy(
-                    animalAction = tmpState
-                )
-            }
-        }
-    }
-
-    fun deleteAnimal(animalId: String) {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    animalAction = AnimalActionUIState.Loading
-                )
-            }
-            _uiState.update { it ->
-                val tmpState = runCatching {
-                    repository.deleteAnimal(
-                        animalId = animalId
-                    )
-                }.fold(
-                    onSuccess = {
-                        if (it.status == "success") {
-                            AnimalActionUIState.Success(it.message)
-                        } else {
-                            AnimalActionUIState.Error(it.message)
-                        }
-                    },
-                    onFailure = {
-                        AnimalActionUIState.Error(it.message ?: "Unknown error")
-                    }
-                )
-
-                it.copy(
-                    animalAction = tmpState
-                )
+                it.copy(plant = tmpState)
             }
         }
     }
