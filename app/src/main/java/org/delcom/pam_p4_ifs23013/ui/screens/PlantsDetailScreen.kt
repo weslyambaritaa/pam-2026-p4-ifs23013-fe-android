@@ -24,7 +24,10 @@ fun PlantsDetailScreen(navController: NavHostController, snackbarHost: SnackbarH
     LaunchedEffect(plantId) { plantViewModel.getPlantById(plantId) }
 
     Scaffold(
-        topBar = { TopAppBarComponent(title = "Detail Tumbuhan", onBack = { RouteHelper.back(navController) }) },
+        topBar = {
+            // Karena tidak ada onBack pada TopAppBarComponent aslinya, kita hapus onBack
+            TopAppBarComponent(title = "Detail Tumbuhan")
+        },
         snackbarHost = { SnackbarHost(hostState = snackbarHost) }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {

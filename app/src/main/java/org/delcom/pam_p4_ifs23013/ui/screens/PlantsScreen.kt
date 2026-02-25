@@ -38,7 +38,8 @@ fun PlantsScreen(navController: NavHostController, plantViewModel: PlantViewMode
             when (val state = uiState.plants) {
                 is PlantsUIState.Loading -> LoadingUI()
                 is PlantsUIState.Success -> PlantsUI(state.data) { plantId ->
-                    RouteHelper.to(navController, ConstHelper.RouteNames.PlantsDetail.path.replace("{plantId}", plantId))
+                    // RouteHelper.to mengharapkan (navController, route) atau (navController, route, navOptions)
+                    navController.navigate(ConstHelper.RouteNames.PlantsDetail.path.replace("{plantId}", plantId))
                 }
                 is PlantsUIState.Error -> Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(text = state.message, color = MaterialTheme.colorScheme.error)
