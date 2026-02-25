@@ -11,7 +11,6 @@ import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.delcom.pam_p4_ifs23013.network.animals.data.ResponseAnimalData
-import org.delcom.pam_p4_ifs23013.network.animals.data.ResponseProfile
 import org.delcom.pam_p4_ifs23013.network.animals.service.IAnimalRepository
 import javax.inject.Inject
 

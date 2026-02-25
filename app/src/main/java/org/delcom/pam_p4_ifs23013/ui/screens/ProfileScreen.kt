@@ -40,7 +40,6 @@ import coil.compose.AsyncImage
 import org.delcom.pam_p4_ifs23013.R
 import org.delcom.pam_p4_ifs23013.helper.RouteHelper
 import org.delcom.pam_p4_ifs23013.helper.ToolsHelper
-import org.delcom.pam_p4_ifs23013.network.animals.data.ResponseProfile
 import org.delcom.pam_p4_ifs23013.ui.components.BottomNavComponent
 import org.delcom.pam_p4_ifs23013.ui.components.LoadingUI
 import org.delcom.pam_p4_ifs23013.ui.components.TopAppBarComponent
