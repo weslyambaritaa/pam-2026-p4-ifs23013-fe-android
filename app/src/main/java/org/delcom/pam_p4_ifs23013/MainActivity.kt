@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             DelcomTheme {
                 UIApp(
-                    animalViewModel = animalViewModel
+                        animalViewModel = animalViewModel
                 )
             }
         }

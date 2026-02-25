@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import org.delcom.pam_p4_ifs23013.R
-import org.delcom.pam_p4_ifs23013.helper.RouteHelper
 import org.delcom.pam_p4_ifs23013.network.plants.data.ResponsePlantData
 import org.delcom.pam_p4_ifs23013.ui.components.LoadingUI
 import org.delcom.pam_p4_ifs23013.ui.components.TopAppBarComponent
@@ -61,15 +60,11 @@ fun PlantsDetailScreen(
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
     ) {
+        // PERBAIKAN: Pemanggilan ganda dihapus, hanya memanggil satu kali dengan benar
         TopAppBarComponent(
             navController = navController,
             title = "Detail Tumbuhan",
-            showBackButton = true,
-            TopAppBarComponent(
-                navController = navController,
-                title = "Detail Tumbuhan",
-                showBackButton = true
-            )
+            showBackButton = true
         )
 
         Box(modifier = Modifier.weight(1f)) {

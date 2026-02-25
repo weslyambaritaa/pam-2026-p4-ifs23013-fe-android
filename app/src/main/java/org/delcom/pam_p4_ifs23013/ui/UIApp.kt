@@ -23,16 +23,19 @@ import org.delcom.pam_p4_ifs23013.ui.screens.AnimalsAddScreen
 import org.delcom.pam_p4_ifs23013.ui.screens.AnimalsDetailScreen
 import org.delcom.pam_p4_ifs23013.ui.screens.AnimalsEditScreen
 import org.delcom.pam_p4_ifs23013.ui.screens.AnimalsScreen
+import org.delcom.pam_p4_ifs23013.ui.screens.PlantsScreen
+import org.delcom.pam_p4_ifs23013.ui.screens.PlantsDetailScreen
 import org.delcom.pam_p4_ifs23013.ui.screens.ProfileScreen
 import org.delcom.pam_p4_ifs23013.ui.viewmodels.AnimalViewModel
+import org.delcom.pam_p4_ifs23013.ui.viewmodels.PlantViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun UIApp(
     navController: NavHostController = rememberNavController(),
-    animalViewModel: AnimalViewModel
+    animalViewModel: AnimalViewModel,
+    plantViewModel: PlantViewModel // <-- DITAMBAHKAN DI SINI
 ) {
-    // Inisialisasi SnackbarHostState
     val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
@@ -63,11 +66,11 @@ fun UIApp(
             ) { _ ->
                 ProfileScreen(
                     navController = navController,
-                    animalViewModel = animalViewModel
+                    plantViewModel = plantViewModel // Menggunakan PlantViewModel
                 )
             }
 
-            // Animals
+            // ================== ANIMALS ==================
             composable(
                 route = ConstHelper.RouteNames.Animals.path,
             ) { _ ->
@@ -77,7 +80,6 @@ fun UIApp(
                 )
             }
 
-            // Animals Add
             composable(
                 route = ConstHelper.RouteNames.AnimalsAdd.path,
             ) { _ ->
@@ -88,7 +90,6 @@ fun UIApp(
                 )
             }
 
-            // Animals Detail
             composable(
                 route = ConstHelper.RouteNames.AnimalsDetail.path,
                 arguments = listOf(
@@ -96,7 +97,6 @@ fun UIApp(
                 )
             ) { backStackEntry ->
                 val animalId = backStackEntry.arguments?.getString("animalId") ?: ""
-
                 AnimalsDetailScreen(
                     navController = navController,
                     snackbarHost = snackbarHostState,
@@ -105,7 +105,6 @@ fun UIApp(
                 )
             }
 
-            // Animals Edit
             composable(
                 route = ConstHelper.RouteNames.AnimalsEdit.path,
                 arguments = listOf(
@@ -113,7 +112,6 @@ fun UIApp(
                 )
             ) { backStackEntry ->
                 val animalId = backStackEntry.arguments?.getString("animalId") ?: ""
-
                 AnimalsEditScreen(
                     navController = navController,
                     snackbarHost = snackbarHostState,
@@ -121,7 +119,31 @@ fun UIApp(
                     animalId = animalId
                 )
             }
+
+            // ================== PLANTS ==================
+            composable(
+                route = ConstHelper.RouteNames.Plants.path,
+            ) { _ ->
+                PlantsScreen(
+                    navController = navController,
+                    plantViewModel = plantViewModel
+                )
+            }
+
+            composable(
+                route = ConstHelper.RouteNames.PlantsDetail.path,
+                arguments = listOf(
+                    navArgument("plantId") { type = NavType.StringType },
+                )
+            ) { backStackEntry ->
+                val plantId = backStackEntry.arguments?.getString("plantId") ?: ""
+                PlantsDetailScreen(
+                    navController = navController,
+                    snackbarHost = snackbarHostState,
+                    plantViewModel = plantViewModel,
+                    plantId = plantId
+                )
+            }
         }
     }
-
 }
