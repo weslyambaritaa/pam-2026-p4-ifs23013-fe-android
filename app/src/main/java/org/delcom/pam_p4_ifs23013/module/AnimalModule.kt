@@ -7,6 +7,7 @@ import dagger.hilt.components.SingletonComponent
 import org.delcom.pam_p4_ifs23013.network.animals.service.IAnimalAppContainer
 import org.delcom.pam_p4_ifs23013.network.animals.service.IAnimalRepository
 import org.delcom.pam_p4_ifs23013.network.animals.service.AnimalAppContainer
+import org.delcom.pam_p4_ifs23013.network.animals.service.AnimalRepository
 
 @Module
 @InstallIn(SingletonComponent::class)
