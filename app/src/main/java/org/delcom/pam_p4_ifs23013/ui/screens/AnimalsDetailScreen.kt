@@ -12,7 +12,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -60,121 +59,95 @@ fun AnimalsDetailScreen(
     animalViewModel: AnimalViewModel,
     animalId: String
 ) {
-    // Ambil data dari viewmodel
     val uiStateAnimal by animalViewModel.uiState.collectAsState()
+    // Perbaikan State Tambahan (ViewModel Baru)
+    val actionState by animalViewModel.actionUIState.collectAsState()
+
     var isLoading by remember { mutableStateOf(false) }
     var isConfirmDelete by remember { mutableStateOf(false) }
-
-    // Muat data
     var animal by remember { mutableStateOf<ResponseAnimalData?>(null) }
 
-    // Dapatkan tumbuhan berdasarkan ID
     LaunchedEffect(Unit) {
         isLoading = true
-        // Reset status animal action
-        uiStateAnimal.animalAction = AnimalActionUIState.Loading
-        uiStateAnimal.animal = AnimalUIState.Loading
         animalViewModel.getAnimalById(animalId)
+        animalViewModel.clearActionState()
     }
 
-    // Picu ulang ketika data tumbuhan berubah
     LaunchedEffect(uiStateAnimal.animal) {
-        if(uiStateAnimal.animal !is AnimalUIState.Loading){
-            if(uiStateAnimal.animal is AnimalUIState.Success){
-                animal = (uiStateAnimal.animal as AnimalUIState.Success).data
+        when (val state = uiStateAnimal.animal) {
+            is AnimalUIState.Success -> {
+                animal = state.data
                 isLoading = false
-            } else {
+            }
+            is AnimalUIState.Error -> {
+                isLoading = false
                 RouteHelper.back(navController)
-            }
-        }
-    }
-
-    fun onDelete(){
-        isLoading = true
-        animalViewModel.deleteAnimal(animalId)
-    }
-
-    LaunchedEffect(uiStateAnimal.animalAction) {
-        when (val state = uiStateAnimal.animalAction) {
-            is AnimalActionUIState.Success -> {
-                SuspendHelper.showSnackBar(
-                    snackbarHost = snackbarHost,
-                    type = SnackBarType.SUCCESS,
-                    message = state.message
-                )
-                RouteHelper.to(
-                    navController,
-                    ConstHelper.RouteNames.Animals.path,
-                    true
-                )
-                uiStateAnimal.animal = AnimalUIState.Loading
-                isLoading = false
-            }
-            is AnimalActionUIState.Error -> {
-                SuspendHelper.showSnackBar(
-                    snackbarHost = snackbarHost,
-                    type = SnackBarType.ERROR,
-                    message = state.message
-                )
-                isLoading = false
             }
             else -> {}
         }
     }
 
-    // Tampilkan halaman loading
-    if(isLoading || animal == null){
+    fun onDelete() {
+        isLoading = true
+        animalViewModel.deleteAnimal(animalId)
+    }
+
+    // Menggunakan actionState yang dipisah (sesuai saran perbaikan ViewModel sebelumnya)
+    LaunchedEffect(actionState) {
+        when (actionState) {
+            is AnimalActionUIState.Success -> {
+                isLoading = false
+                SuspendHelper.showSnackBar(
+                    snackbarHost = snackbarHost,
+                    type = SnackBarType.SUCCESS,
+                    message = (actionState as AnimalActionUIState.Success).message
+                )
+                RouteHelper.to(navController, ConstHelper.RouteNames.Animals.path, true)
+            }
+            is AnimalActionUIState.Error -> {
+                isLoading = false
+                SuspendHelper.showSnackBar(
+                    snackbarHost = snackbarHost,
+                    type = SnackBarType.ERROR,
+                    message = (actionState as AnimalActionUIState.Error).message
+                )
+            }
+            else -> {}
+        }
+    }
+
+    if (isLoading || animal == null) {
         LoadingUI()
         return
     }
 
-    // Menu item details
     val detailMenuItems = listOf(
         TopAppBarMenuItem(
             text = "Ubah Data",
             icon = Icons.Filled.Edit,
-            route = null,
             onClick = {
                 RouteHelper.to(
                     navController,
-                    ConstHelper.RouteNames.AnimalsEdit.path
-                        .replace("{animalId}", animal!!.id),
+                    ConstHelper.RouteNames.AnimalsEdit.path.replace("{animalId}", animal!!.id),
                 )
             }
         ),
         TopAppBarMenuItem(
             text = "Hapus Data",
             icon = Icons.Filled.Delete,
-            route = null,
-            onClick = {
-                isConfirmDelete = true
-            }
+            onClick = { isConfirmDelete = true }
         ),
     )
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.background)
-    )
-    {
-        // Top App Bar
+    Column(modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.background)) {
         TopAppBarComponent(
             navController = navController,
-            title = animal!!.nama,
+            title = animal?.nama ?: "Detail",
             showBackButton = true,
             customMenuItems = detailMenuItems
         )
-        // Content
-        Box(
-            modifier = Modifier
-                .weight(1f)
-        ) {
-            // Content UI
-            AnimalsDetailUI(
-                animal = animal!!
-            )
-            // Bottom Dialog to Confirmation Delete
+        Box(modifier = Modifier.weight(1f)) {
+            AnimalsDetailUI(animal = animal!!)
             BottomDialog(
                 type = BottomDialogType.ERROR,
                 show = isConfirmDelete,
@@ -182,47 +155,32 @@ fun AnimalsDetailScreen(
                 title = "Konfirmasi Hapus Data",
                 message = "Apakah Anda yakin ingin menghapus data ini?",
                 confirmText = "Ya, Hapus",
-                onConfirm = {
-                    onDelete()
-                },
+                onConfirm = { onDelete() },
                 cancelText = "Batal",
                 destructiveAction = true
             )
         }
-        // Bottom Nav
         BottomNavComponent(navController = navController)
     }
 }
 
 @Composable
-fun AnimalsDetailUI(
-    animal: ResponseAnimalData
-) {
+fun AnimalsDetailUI(animal: ResponseAnimalData) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
-    )
-    {
-        // Gambar
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(vertical = 16.dp)
-        )
-        {
+    ) {
+        Column(modifier = Modifier.fillMaxSize().padding(vertical = 16.dp)) {
             AsyncImage(
                 model = ToolsHelper.getAnimalImageUrl(animal.id),
                 contentDescription = animal.nama,
                 placeholder = painterResource(R.drawable.img_placeholder),
                 error = painterResource(R.drawable.img_placeholder),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(250.dp),
+                modifier = Modifier.fillMaxWidth().height(250.dp),
                 contentScale = ContentScale.Fit
             )
-
             Text(
                 text = animal.nama,
                 style = MaterialTheme.typography.headlineLarge,
@@ -232,116 +190,24 @@ fun AnimalsDetailUI(
             )
         }
 
-        // Deskripsi
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 24.dp),
-            shape = MaterialTheme.shapes.medium,
-            elevation = CardDefaults.cardElevation(4.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        )
-        {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = "Deskripsi",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.SemiBold
-                )
-                HorizontalDivider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 4.dp)
-                )
-                Text(
-                    text = animal.deskripsi,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-            }
-
-        }
-
-        // Manfaat
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 24.dp),
-            shape = MaterialTheme.shapes.medium,
-            elevation = CardDefaults.cardElevation(4.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        )
-        {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = "Manfaat",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.SemiBold
-                )
-                HorizontalDivider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 4.dp)
-                )
-                Text(
-                    text = animal.habitat,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-            }
-
-        }
-
-        // Efek Samping
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 24.dp),
-            shape = MaterialTheme.shapes.medium,
-            elevation = CardDefaults.cardElevation(4.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        )
-        {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = "Efek Samping",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.SemiBold
-                )
-                HorizontalDivider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 4.dp)
-                )
-                Text(
-                    text = animal.makananFavorit,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-            }
-
-        }
+        DetailCard("Deskripsi", animal.deskripsi)
+        DetailCard("Habitat", animal.habitat)
+        DetailCard("Makanan Favorit", animal.makananFavorit)
     }
 }
 
-@Preview(showBackground = true, name = "Light Mode")
 @Composable
-fun PreviewAnimalsDetailUI() {
-    DelcomTheme {
-//        AnimalsDetailUI(
-//            animal = DummyData.getAnimalsData()[0]
-//        )
+fun DetailCard(title: String, content: String) {
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp),
+        shape = MaterialTheme.shapes.medium,
+        elevation = CardDefaults.cardElevation(4.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+    ) {
+        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+            Text(text = title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
+            HorizontalDivider(modifier = Modifier.fillMaxWidth().padding(top = 4.dp))
+            Text(text = content, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(top = 4.dp))
+        }
     }
 }
