@@ -185,8 +185,8 @@ fun PreviewProfileUI(){
     DelcomTheme {
         ProfileUI(
             profile = ResponseProfile(
-                nama = "Abdullah Ubaid",
-                username = "ifs18005",
+                nama = "Wesly Fery Wanda AMbarita",
+                username = "ifs23013",
                 tentang = ""
             )
         )

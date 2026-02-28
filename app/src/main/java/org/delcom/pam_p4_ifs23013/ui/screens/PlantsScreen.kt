@@ -1,5 +1,6 @@
 package org.delcom.pam_p4_ifs23013.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -24,7 +25,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,68 +38,47 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
-import org.delcom.pam_p4_ifs23013.R
+import org.delcom.pam_p4_ifs23013.data.DummyData
+import org.delcom.pam_p4_ifs23013.data.PlantData
 import org.delcom.pam_p4_ifs23013.helper.ConstHelper
 import org.delcom.pam_p4_ifs23013.helper.RouteHelper
-import org.delcom.pam_p4_ifs23013.helper.ToolsHelper
-import org.delcom.pam_p4_ifs23013.network.plants.data.ResponsePlantData
 import org.delcom.pam_p4_ifs23013.ui.components.BottomNavComponent
-import org.delcom.pam_p4_ifs23013.ui.components.LoadingUI
 import org.delcom.pam_p4_ifs23013.ui.components.TopAppBarComponent
 import org.delcom.pam_p4_ifs23013.ui.viewmodels.PlantViewModel
-import org.delcom.pam_p4_ifs23013.ui.viewmodels.PlantsUIState
-import org.delcom.pam_p4_ifs23013.ui.viewmodels.PlantProfileUIState
 
 @Composable
 fun PlantsScreen(
     navController: NavHostController,
-    plantViewModel: PlantViewModel
+    plantViewModel: PlantViewModel // Tetap dibiarkan jika sewaktu-waktu dipakai lagi
 ) {
-    // Ambil data dari viewmodel
-    val uiStatePlant by plantViewModel.uiState.collectAsState()
+    var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
 
-    var isLoading by remember { mutableStateOf(false) }
-    var searchQuery by remember {
-        mutableStateOf(TextFieldValue(""))
+    // Ubah tipe data state ke PlantData (dari DummyData)
+    var plants by remember { mutableStateOf<List<PlantData>>(emptyList()) }
+
+    // Fungsi Query/Pencarian manual dari DummyData
+    fun fetchPlantsData() {
+        val queryText = searchQuery.text.trim()
+        val allPlants = DummyData.getPlantsData()
+
+        plants = if (queryText.isEmpty()) {
+            allPlants // Jika pencarian kosong, tampilkan semua
+        } else {
+            // Filter data yang namanya mengandung huruf yang dicari (abaikan huruf besar/kecil)
+            allPlants.filter { it.nama.contains(queryText, ignoreCase = true) }
+        }
     }
 
-    // Muat data
-    var plants by remember { mutableStateOf<List<ResponsePlantData>>(emptyList()) }
-
-    fun fetchPlantsData(){
-        isLoading = true
-        plantViewModel.getAllPlants(searchQuery.text)
-    }
-
-    // Picu pengambilan data plants
+    // Picu pengambilan data saat halaman pertama kali dibuka
     LaunchedEffect(Unit) {
         fetchPlantsData()
     }
 
-    // Picu ketika terjadi perubahan data plants
-    LaunchedEffect(uiStatePlant.plants){
-        if(uiStatePlant.plants !is PlantsUIState.Loading){
-            isLoading = false
-
-            plants = if(uiStatePlant.plants is PlantsUIState.Success) {
-                (uiStatePlant.plants as PlantsUIState.Success).data
-            }else{
-                emptyList()
-            }
-        }
-    }
-
-    // Tampilkan halaman loading
-    if(isLoading){
-        LoadingUI()
-        return
-    }
-
+    // Fungsi klik jika ingin membuka detail
     fun onOpen(plantId: String) {
+        // Karena PlantData tidak punya ID, kita pakai nama sebagai pengganti sementara
         RouteHelper.to(
             navController = navController,
             destination = "plants/${plantId}"
@@ -119,40 +98,36 @@ fun PlantsScreen(
             searchQuery = searchQuery,
             onSearchQueryChange = { query ->
                 searchQuery = query
+                // Jika ingin pencarian berjalan realtime (live search) saat diketik, uncomment baris bawah:
+                // fetchPlantsData()
             },
             onSearchAction = {
-                fetchPlantsData()
+                fetchPlantsData() // Pencarian dijalankan saat tombol enter/search di keyboard ditekan
             }
         )
         // Content
         Box(
-            modifier = Modifier
-                .weight(1f)
+            modifier = Modifier.weight(1f)
         ) {
             PlantsUI(
                 plants = plants,
                 onOpen = ::onOpen
             )
 
+            // Floating Action Button
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-            )
-            {
-                // Floating Action Button
+                modifier = Modifier.fillMaxSize()
+            ) {
                 FloatingActionButton(
                     onClick = {
                         RouteHelper.to(
                             navController,
-                            ConstHelper.RouteNames
-                                .PlantsAdd
-                                .path
+                            ConstHelper.RouteNames.PlantsAdd.path
                         )
                     },
                     modifier = Modifier
-                        .align(Alignment.BottomEnd) // pojok kanan bawah
-                        .padding(16.dp) // jarak dari tepi
-                    ,
+                        .align(Alignment.BottomEnd)
+                        .padding(16.dp),
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 ) {
@@ -170,7 +145,7 @@ fun PlantsScreen(
 
 @Composable
 fun PlantsUI(
-    plants: List<ResponsePlantData>,
+    plants: List<PlantData>, // Ubah parameter menjadi List<PlantData>
     onOpen: (String) -> Unit
 ) {
     LazyColumn(
@@ -181,13 +156,13 @@ fun PlantsUI(
     ) {
         items(plants) { plant ->
             PlantItemUI(
-                plant,
-                onOpen
+                plant = plant,
+                onOpen = onOpen
             )
         }
     }
 
-    if(plants.isEmpty()){
+    if (plants.isEmpty()) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -210,7 +185,7 @@ fun PlantsUI(
 
 @Composable
 fun PlantItemUI(
-    plant: ResponsePlantData,
+    plant: PlantData, // Ubah parameter menjadi PlantData
     onOpen: (String) -> Unit
 ) {
     Card(
@@ -218,7 +193,8 @@ fun PlantItemUI(
             .fillMaxWidth()
             .padding(8.dp)
             .clickable {
-                onOpen(plant.id)
+                // Kita mengirimkan nama sebagai parameter "ID" untuk saat ini
+                onOpen(plant.nama)
             },
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.cardElevation(4.dp),
@@ -229,11 +205,10 @@ fun PlantItemUI(
                 .fillMaxWidth()
                 .padding(12.dp)
         ) {
-            AsyncImage(
-                model = ToolsHelper.getPlantImageUrl(plant.id),
+            // Kita ganti AsyncImage menjadi Image standar bawaan Compose untuk meload file drawable (Resource)
+            Image(
+                painter = painterResource(id = plant.gambar),
                 contentDescription = plant.nama,
-                placeholder = painterResource(R.drawable.img_placeholder),
-                error = painterResource(R.drawable.img_placeholder),
                 modifier = Modifier
                     .size(70.dp)
                     .clip(MaterialTheme.shapes.medium),
@@ -243,8 +218,7 @@ fun PlantItemUI(
             Spacer(modifier = Modifier.width(12.dp))
 
             Column(
-                modifier = Modifier
-                    .weight(1f)
+                modifier = Modifier.weight(1f)
             ) {
                 Text(
                     text = plant.nama,
@@ -263,15 +237,4 @@ fun PlantItemUI(
             }
         }
     }
-}
-
-@Preview(showBackground = true, name = "Light Mode")
-@Composable
-fun PreviewPlantsUI() {
-//    DelcomTheme {
-//        PlantsUI(
-//            plants = DummyData.getPlantsData(),
-//            onOpen = {}
-//        )
-//    }
 }

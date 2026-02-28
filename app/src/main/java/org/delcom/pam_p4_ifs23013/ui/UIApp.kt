@@ -23,14 +23,20 @@ import org.delcom.pam_p4_ifs23013.ui.screens.AnimalsAddScreen
 import org.delcom.pam_p4_ifs23013.ui.screens.AnimalsDetailScreen
 import org.delcom.pam_p4_ifs23013.ui.screens.AnimalsEditScreen
 import org.delcom.pam_p4_ifs23013.ui.screens.AnimalsScreen
+import org.delcom.pam_p4_ifs23013.ui.screens.PlantsAddScreen
+import org.delcom.pam_p4_ifs23013.ui.screens.PlantsDetailScreen
+import org.delcom.pam_p4_ifs23013.ui.screens.PlantsEditScreen
+import org.delcom.pam_p4_ifs23013.ui.screens.PlantsScreen
 import org.delcom.pam_p4_ifs23013.ui.screens.ProfileScreen
 import org.delcom.pam_p4_ifs23013.ui.viewmodels.AnimalViewModel
+import org.delcom.pam_p4_ifs23013.ui.viewmodels.PlantViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun UIApp(
     navController: NavHostController = rememberNavController(),
-    animalViewModel: AnimalViewModel
+    animalViewModel: AnimalViewModel,
+    plantViewModel: PlantViewModel // Ditambahkan untuk Plants
 ) {
     // Inisialisasi SnackbarHostState
     val snackbarHostState = remember { SnackbarHostState() }
@@ -66,6 +72,8 @@ fun UIApp(
                     animalViewModel = animalViewModel
                 )
             }
+
+            // ==================== ANIMALS ROUTE ====================
 
             // Animals
             composable(
@@ -121,7 +129,64 @@ fun UIApp(
                     animalId = animalId
                 )
             }
+
+            // ==================== PLANTS ROUTE ====================
+
+            // Plants
+            composable(
+                route = ConstHelper.RouteNames.Plants.path,
+            ) { _ ->
+                PlantsScreen(
+                    navController = navController,
+                    plantViewModel = plantViewModel
+                )
+            }
+
+            // Plants Add
+            composable(
+                route = ConstHelper.RouteNames.PlantsAdd.path,
+            ) { _ ->
+                PlantsAddScreen(
+                    navController = navController,
+                    snackbarHost = snackbarHostState,
+                    plantViewModel = plantViewModel
+                )
+            }
+
+            // Plants Detail
+            composable(
+                route = ConstHelper.RouteNames.PlantsDetail.path,
+                arguments = listOf(
+                    navArgument("plantId") { type = NavType.StringType },
+                )
+            ) { backStackEntry ->
+                // Perhatikan argumen di sini adalah "plantId" (sesuai ConstHelper jika sudah diatur demikian)
+                val plantId = backStackEntry.arguments?.getString("plantId") ?: ""
+
+                PlantsDetailScreen(
+                    navController = navController,
+                    snackbarHost = snackbarHostState,
+                    plantViewModel = plantViewModel,
+                    plantId = plantId
+                )
+            }
+
+            // Plants Edit
+            composable(
+                route = ConstHelper.RouteNames.PlantsEdit.path,
+                arguments = listOf(
+                    navArgument("plantId") { type = NavType.StringType },
+                )
+            ) { backStackEntry ->
+                val plantId = backStackEntry.arguments?.getString("plantId") ?: ""
+
+                PlantsEditScreen(
+                    navController = navController,
+                    snackbarHost = snackbarHostState,
+                    plantViewModel = plantViewModel,
+                    plantId = plantId
+                )
+            }
         }
     }
-
 }
