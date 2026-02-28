@@ -15,6 +15,11 @@ object ToolsHelper {
         return "${BuildConfig.BASE_URL_PANTS_API}animals/${animalId}/image"
     }
 
+    // Add this missing function for plants
+    fun getPlantImageUrl(plantId: String): String{
+        return "${BuildConfig.BASE_URL_PANTS_API}plants/${plantId}/image"
+    }
+
     fun getProfilePhotoUrl(): String{
         return "${BuildConfig.BASE_URL_PANTS_API}profile/photo"
     }

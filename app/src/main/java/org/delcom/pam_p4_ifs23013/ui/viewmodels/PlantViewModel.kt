@@ -15,10 +15,11 @@ import org.delcom.pam_p4_ifs23013.network.plants.data.ResponseProfile
 import org.delcom.pam_p4_ifs23013.network.plants.service.IPlantRepository
 import javax.inject.Inject
 
-sealed interface ProfileUIState {
-    data class Success(val data: ResponseProfile) : ProfileUIState
-    data class Error(val message: String) : ProfileUIState
-    object Loading : ProfileUIState
+// Mengubah nama menjadi PlantProfileUIState untuk menghindari redeclaration
+sealed interface PlantProfileUIState {
+    data class Success(val data: ResponseProfile) : PlantProfileUIState
+    data class Error(val message: String) : PlantProfileUIState
+    object Loading : PlantProfileUIState
 }
 
 sealed interface PlantsUIState {
@@ -37,13 +38,14 @@ sealed interface PlantActionUIState {
     data class Success(val message: String) : PlantActionUIState
     data class Error(val message: String) : PlantActionUIState
     object Loading : PlantActionUIState
+    object Idle : PlantActionUIState // Menambahkan Idle state
 }
 
 data class UIStatePlant(
-    val profile: ProfileUIState = ProfileUIState.Loading,
+    val profile: PlantProfileUIState = PlantProfileUIState.Loading,
     val plants: PlantsUIState = PlantsUIState.Loading,
     var plant: PlantUIState = PlantUIState.Loading,
-    var plantAction: PlantActionUIState = PlantActionUIState.Loading
+    var plantAction: PlantActionUIState = PlantActionUIState.Idle // Default ke Idle
 )
 
 @HiltViewModel
@@ -54,63 +56,36 @@ class PlantViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(UIStatePlant())
     val uiState = _uiState.asStateFlow()
 
+    // Menambahkan fungsi clear state agar SnackBar tidak muncul berulang
+    fun clearActionState() {
+        _uiState.update { it.copy(plantAction = PlantActionUIState.Idle) }
+    }
+
     fun getProfile() {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    profile = ProfileUIState.Loading
-                )
-            }
-            _uiState.update { it ->
-                val tmpState = runCatching {
-                    repository.getProfile()
-                }.fold(
-                    onSuccess = {
-                        if (it.status == "success") {
-                            ProfileUIState.Success(it.data!!)
-                        } else {
-                            ProfileUIState.Error(it.message)
-                        }
-                    },
-                    onFailure = {
-                        ProfileUIState.Error(it.message ?: "Unknown error")
-                    }
-                )
-
-                it.copy(
-                    profile = tmpState
-                )
-            }
+            _uiState.update { it.copy(profile = PlantProfileUIState.Loading) }
+            val result = runCatching { repository.getProfile() }.fold(
+                onSuccess = {
+                    if (it.status == "success") PlantProfileUIState.Success(it.data!!)
+                    else PlantProfileUIState.Error(it.message)
+                },
+                onFailure = { PlantProfileUIState.Error(it.message ?: "Gagal memuat profil") }
+            )
+            _uiState.update { it.copy(profile = result) }
         }
     }
 
     fun getAllPlants(search: String? = null) {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    plants = PlantsUIState.Loading
-                )
-            }
-            _uiState.update { it ->
-                val tmpState = runCatching {
-                    repository.getAllPlants(search)
-                }.fold(
-                    onSuccess = {
-                        if (it.status == "success") {
-                            PlantsUIState.Success(it.data!!.plants)
-                        } else {
-                            PlantsUIState.Error(it.message)
-                        }
-                    },
-                    onFailure = {
-                        PlantsUIState.Error(it.message ?: "Unknown error")
-                    }
-                )
-
-                it.copy(
-                    plants = tmpState
-                )
-            }
+            _uiState.update { it.copy(plants = PlantsUIState.Loading) }
+            val result = runCatching { repository.getAllPlants(search) }.fold(
+                onSuccess = {
+                    if (it.status == "success") PlantsUIState.Success(it.data!!.plants)
+                    else PlantsUIState.Error(it.message)
+                },
+                onFailure = { PlantsUIState.Error(it.message ?: "Gagal memuat data") }
+            )
+            _uiState.update { it.copy(plants = result) }
         }
     }
 
@@ -122,67 +97,31 @@ class PlantViewModel @Inject constructor(
         file: MultipartBody.Part
     ) {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    plantAction = PlantActionUIState.Loading
-                )
-            }
-            _uiState.update { it ->
-                val tmpState = runCatching {
-                    repository.postPlant(
-                        nama = nama,
-                        deskripsi = deskripsi,
-                        manfaat = manfaat,
-                        efekSamping = efekSamping,
-                        file = file
-                    )
-                }.fold(
-                    onSuccess = {
-                        if (it.status == "success") {
-                            PlantActionUIState.Success(it.data!!.plantId)
-                        } else {
-                            PlantActionUIState.Error(it.message)
-                        }
-                    },
-                    onFailure = {
-                        PlantActionUIState.Error(it.message ?: "Unknown error")
-                    }
-                )
-
-                it.copy(
-                    plantAction = tmpState
-                )
-            }
+            _uiState.update { it.copy(plantAction = PlantActionUIState.Loading) }
+            val result = runCatching {
+                repository.postPlant(nama, deskripsi, manfaat, efekSamping, file)
+            }.fold(
+                onSuccess = {
+                    if (it.status == "success") PlantActionUIState.Success("Berhasil menambah data")
+                    else PlantActionUIState.Error(it.message)
+                },
+                onFailure = { PlantActionUIState.Error(it.message ?: "Terjadi kesalahan") }
+            )
+            _uiState.update { it.copy(plantAction = result) }
         }
     }
 
     fun getPlantById(plantId: String) {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    plant = PlantUIState.Loading
-                )
-            }
-            _uiState.update { it ->
-                val tmpState = runCatching {
-                    repository.getPlantById(plantId)
-                }.fold(
-                    onSuccess = {
-                        if (it.status == "success") {
-                            PlantUIState.Success(it.data!!.plant)
-                        } else {
-                            PlantUIState.Error(it.message)
-                        }
-                    },
-                    onFailure = {
-                        PlantUIState.Error(it.message ?: "Unknown error")
-                    }
-                )
-
-                it.copy(
-                    plant = tmpState
-                )
-            }
+            _uiState.update { it.copy(plant = PlantUIState.Loading) }
+            val result = runCatching { repository.getPlantById(plantId) }.fold(
+                onSuccess = {
+                    if (it.status == "success") PlantUIState.Success(it.data!!.plant)
+                    else PlantUIState.Error(it.message)
+                },
+                onFailure = { PlantUIState.Error(it.message ?: "Data tidak ditemukan") }
+            )
+            _uiState.update { it.copy(plant = result) }
         }
     }
 
@@ -195,70 +134,31 @@ class PlantViewModel @Inject constructor(
         file: MultipartBody.Part?
     ) {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    plantAction = PlantActionUIState.Loading
-                )
-            }
-            _uiState.update { it ->
-                val tmpState = runCatching {
-                    repository.putPlant(
-                        plantId = plantId,
-                        nama = nama,
-                        deskripsi = deskripsi,
-                        manfaat = manfaat,
-                        efekSamping = efekSamping,
-                        file = file
-                    )
-                }.fold(
-                    onSuccess = {
-                        if (it.status == "success") {
-                            PlantActionUIState.Success(it.message)
-                        } else {
-                            PlantActionUIState.Error(it.message)
-                        }
-                    },
-                    onFailure = {
-                        PlantActionUIState.Error(it.message ?: "Unknown error")
-                    }
-                )
-
-                it.copy(
-                    plantAction = tmpState
-                )
-            }
+            _uiState.update { it.copy(plantAction = PlantActionUIState.Loading) }
+            val result = runCatching {
+                repository.putPlant(plantId, nama, deskripsi, manfaat, efekSamping, file)
+            }.fold(
+                onSuccess = {
+                    if (it.status == "success") PlantActionUIState.Success("Berhasil memperbarui data")
+                    else PlantActionUIState.Error(it.message)
+                },
+                onFailure = { PlantActionUIState.Error(it.message ?: "Gagal memperbarui data") }
+            )
+            _uiState.update { it.copy(plantAction = result) }
         }
     }
 
     fun deletePlant(plantId: String) {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    plantAction = PlantActionUIState.Loading
-                )
-            }
-            _uiState.update { it ->
-                val tmpState = runCatching {
-                    repository.deletePlant(
-                        plantId = plantId
-                    )
-                }.fold(
-                    onSuccess = {
-                        if (it.status == "success") {
-                            PlantActionUIState.Success(it.message)
-                        } else {
-                            PlantActionUIState.Error(it.message)
-                        }
-                    },
-                    onFailure = {
-                        PlantActionUIState.Error(it.message ?: "Unknown error")
-                    }
-                )
-
-                it.copy(
-                    plantAction = tmpState
-                )
-            }
+            _uiState.update { it.copy(plantAction = PlantActionUIState.Loading) }
+            val result = runCatching { repository.deletePlant(plantId) }.fold(
+                onSuccess = {
+                    if (it.status == "success") PlantActionUIState.Success("Berhasil menghapus data")
+                    else PlantActionUIState.Error(it.message)
+                },
+                onFailure = { PlantActionUIState.Error(it.message ?: "Gagal menghapus data") }
+            )
+            _uiState.update { it.copy(plantAction = result) }
         }
     }
 }

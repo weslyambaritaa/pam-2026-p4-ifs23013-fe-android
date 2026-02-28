@@ -52,6 +52,7 @@ import org.delcom.pam_p4_ifs23013.ui.components.LoadingUI
 import org.delcom.pam_p4_ifs23013.ui.components.TopAppBarComponent
 import org.delcom.pam_p4_ifs23013.ui.viewmodels.PlantViewModel
 import org.delcom.pam_p4_ifs23013.ui.viewmodels.PlantsUIState
+import org.delcom.pam_p4_ifs23013.ui.viewmodels.PlantProfileUIState
 
 @Composable
 fun PlantsScreen(
