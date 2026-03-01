@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -28,7 +29,8 @@ import org.delcom.pam_p4_ifs23013.R
 @Composable
 fun RippleLoading(
     modifier: Modifier = Modifier,
-    color: Color = Color(0xFF2E7D32),
+    // MENGUBAH: Default color sekarang mengambil dari theme (Warna Oranye yang baru Anda buat)
+    color: Color = MaterialTheme.colorScheme.primary,
     imageSize: Dp = 76.dp,
     circleSize: Dp = 36.dp,
     maxSize: Dp = 150.dp,
@@ -37,24 +39,23 @@ fun RippleLoading(
     val density = LocalDensity.current
     val circleSizePx = with(density) { circleSize.toPx() }
     val maxSizePx = with(density) { maxSize.toPx() }
-//    val midSizePx = circleSizePx * 2.1875f // ~70px if circleSize is 32px
 
     Box(
         modifier = modifier.size(maxSize + 40.dp),
         contentAlignment = Alignment.Center
     ) {
         // Center logo
+        // MENGUBAH: Mengganti R.drawable.img_logo menjadi R.drawable.app
         Image(
-            painter = painterResource(R.drawable.img_logo),
+            painter = painterResource(R.drawable.app),
             contentDescription = "Logo",
             modifier = Modifier.size(imageSize)
         )
 
-        // Create 3 ripple circles with different delays
+        // Create ripple circles
         repeat(2) { index ->
             val infiniteTransition = rememberInfiniteTransition()
 
-            // Size animation
             val size by infiniteTransition.animateFloat(
                 initialValue = circleSizePx,
                 targetValue = maxSizePx,
@@ -67,7 +68,6 @@ fun RippleLoading(
                 )
             )
 
-            // Alpha animation - starts after size reaches midSize
             val alpha by infiniteTransition.animateFloat(
                 initialValue = 0f,
                 targetValue = 1f,
@@ -83,7 +83,6 @@ fun RippleLoading(
                 )
             )
 
-            // Only show the circle when it's larger than initial size
             if (size > circleSizePx * 1.1f) {
                 Box(
                     modifier = Modifier
@@ -99,17 +98,16 @@ fun RippleLoading(
     }
 }
 
-// Extension function to convert Float px to Dp
 @Composable
 private fun Float.toDp(): Dp = with(LocalDensity.current) { this@toDp.toDp() }
 
-// Cara menggunakannya:
 @Composable
 fun LoadingUI() {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
+        // Secara otomatis akan menggunakan warna primary dari theme yang baru
         RippleLoading()
     }
 }

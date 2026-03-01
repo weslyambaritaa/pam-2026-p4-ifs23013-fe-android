@@ -49,6 +49,7 @@ fun HomeUI(){
     Column(
         modifier = Modifier.padding(top = 16.dp)
     ) {
+        // Judul dengan emoji Jejak Kaki (Paw Prints)
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -58,7 +59,7 @@ fun HomeUI(){
         ) {
             Text(
                 style = MaterialTheme.typography.headlineMedium,
-                text = "\uD83C\uDF33 Delcom Animals \uD83C\uDF33",
+                text = "\uD83D\uDC3E Delcom Animal \uD83D\uDC3E", // 🐾 Delcom Animal 🐾
                 color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
@@ -71,7 +72,7 @@ fun HomeUI(){
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            // Emot 1
+            // Emot 1: Singa (Lion)
             Card(
                 modifier = Modifier
                     .padding(8.dp),
@@ -80,12 +81,12 @@ fun HomeUI(){
             ) {
                 Text(
                     style = MaterialTheme.typography.headlineLarge,
-                    text = "\uD83C\uDF31",
+                    text = "\uD83E\uDD81", // 🦁
                     modifier = Modifier.padding(16.dp)
                 )
             }
 
-            // Emot 2
+            // Emot 2: Gajah (Elephant)
             Card(
                 modifier = Modifier
                     .padding(8.dp),
@@ -94,12 +95,12 @@ fun HomeUI(){
             ) {
                 Text(
                     style = MaterialTheme.typography.headlineLarge,
-                    text = "\uD83C\uDF3F",
+                    text = "\uD83D\uDC18", // 🐘
                     modifier = Modifier.padding(16.dp)
                 )
             }
 
-            // Emot 3
+            // Emot 3: Harimau (Tiger Face)
             Card(
                 modifier = Modifier
                     .padding(8.dp),
@@ -108,12 +109,12 @@ fun HomeUI(){
             ) {
                 Text(
                     style = MaterialTheme.typography.headlineLarge,
-                    text = "\uD83C\uDF40",
+                    text = "\uD83D\uDC2F", // 🐯
                     modifier = Modifier.padding(16.dp)
                 )
             }
 
-            // Emot 4
+            // Emot 4: Buaya (Crocodile)
             Card(
                 modifier = Modifier
                     .padding(8.dp),
@@ -122,7 +123,7 @@ fun HomeUI(){
             ) {
                 Text(
                     style = MaterialTheme.typography.headlineLarge,
-                    text = "\uD83E\uDD6C",
+                    text = "\uD83D\uDC0A", // 🐊
                     modifier = Modifier.padding(16.dp)
                 )
             }

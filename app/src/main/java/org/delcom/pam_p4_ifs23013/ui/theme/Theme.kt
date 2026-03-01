@@ -6,6 +6,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
+/* =========================
+   LIGHT COLORS CONFIGURATION
+   ========================= */
 private val LightColors = lightColorScheme(
     primary = md_theme_light_primary,
     onPrimary = md_theme_light_onPrimary,
@@ -43,6 +46,9 @@ private val LightColors = lightColorScheme(
     scrim = md_theme_light_shadow
 )
 
+/* =========================
+   DARK COLORS CONFIGURATION
+   ========================= */
 private val DarkColors = darkColorScheme(
     primary = md_theme_dark_primary,
     onPrimary = md_theme_dark_onPrimary,
@@ -83,6 +89,7 @@ private val DarkColors = darkColorScheme(
 @Composable
 fun DelcomTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
+    // Set ke false agar selalu menggunakan warna oranye kustom Anda
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {

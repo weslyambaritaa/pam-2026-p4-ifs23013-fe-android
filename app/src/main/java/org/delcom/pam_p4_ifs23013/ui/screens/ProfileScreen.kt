@@ -1,5 +1,6 @@
 package org.delcom.pam_p4_ifs23013.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -19,16 +20,11 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -36,50 +32,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
 import org.delcom.pam_p4_ifs23013.R
-import org.delcom.pam_p4_ifs23013.helper.RouteHelper
-import org.delcom.pam_p4_ifs23013.helper.ToolsHelper
-import org.delcom.pam_p4_ifs23013.network.animals.data.ResponseProfile
 import org.delcom.pam_p4_ifs23013.ui.components.BottomNavComponent
-import org.delcom.pam_p4_ifs23013.ui.components.LoadingUI
 import org.delcom.pam_p4_ifs23013.ui.components.TopAppBarComponent
 import org.delcom.pam_p4_ifs23013.ui.theme.DelcomTheme
 import org.delcom.pam_p4_ifs23013.ui.viewmodels.AnimalViewModel
-import org.delcom.pam_p4_ifs23013.ui.viewmodels.ProfileUIState
 
 @Composable
 fun ProfileScreen(
     navController: NavHostController,
-    animalViewModel: AnimalViewModel
+    animalViewModel: AnimalViewModel // Tetap dipertahankan sebagai parameter agar tidak error di file UIApp.kt
 ) {
-    // Ambil data dari viewmodel
-    val uiStateAnimal by animalViewModel.uiState.collectAsState()
-
-    var isLoading by remember { mutableStateOf(false) }
-    var profile by remember { mutableStateOf<ResponseProfile?>(null) }
-
-    LaunchedEffect(Unit) {
-        isLoading = true
-        animalViewModel.getProfile()
-    }
-
-    LaunchedEffect(uiStateAnimal.profile) {
-        if(uiStateAnimal.profile !is ProfileUIState.Loading){
-            isLoading = false
-            if(uiStateAnimal.profile is ProfileUIState.Success){
-                profile = (uiStateAnimal.profile as ProfileUIState.Success).data
-            }else{
-                RouteHelper.back(navController)
-            }
-        }
-    }
-
-    // Tampilkan halaman loading
-    if(isLoading || profile == null){
-        LoadingUI()
-        return
-    }
+    // Karena datanya di-hardcode, kita tidak perlu lagi memanggil API dan LoadingUI.
+    // Layar akan langsung menampilkan data secara instan.
 
     Column(
         modifier = Modifier
@@ -87,25 +52,22 @@ fun ProfileScreen(
             .background(MaterialTheme.colorScheme.background)
     ) {
         // Top App Bar
-        TopAppBarComponent(navController = navController, title = "Profile", false)
+        TopAppBarComponent(navController = navController, title = "Profile", showBackButton = false)
+
         // Content
         Box(
-            modifier = Modifier
-                .weight(1f)
+            modifier = Modifier.weight(1f)
         ) {
-            ProfileUI(
-                profile = profile!!
-            )
+            ProfileUI()
         }
+
         // Bottom Nav
         BottomNavComponent(navController = navController)
     }
 }
 
 @Composable
-fun ProfileUI(
-    profile: ResponseProfile
-){
+fun ProfileUI(){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -122,12 +84,11 @@ fun ProfileUI(
 
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
-                // Foto Profil
-                AsyncImage(
-                    model = ToolsHelper.getProfilePhotoUrl(),
+                // Foto Profil (Menggunakan file foto_profile.jpg di drawable)
+                Image(
+                    painter = painterResource(id = R.drawable.foto_profile),
                     contentDescription = "Photo Profil",
-                    placeholder = painterResource(R.drawable.img_placeholder),
-                    error = painterResource(R.drawable.img_placeholder),
+                    contentScale = ContentScale.Crop, // Memastikan gambar terpotong rapi menjadi lingkaran
                     modifier = Modifier
                         .size(110.dp)
                         .clip(CircleShape)
@@ -136,14 +97,17 @@ fun ProfileUI(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // Nama Anda
                 Text(
-                    text = profile.nama,
+                    text = "Wesly Fery Wanda Ambarita",
                     fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
                 )
 
+                // NIM Anda
                 Text(
-                    text = profile.username,
+                    text = "11S23013",
                     fontSize = 16.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -168,9 +132,13 @@ fun ProfileUI(
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(8.dp))
+
+                // Deskripsi / Bio Anda
                 Text(
-                    profile.tentang,
-                    fontSize = 15.sp
+                    text = "Mahasiswa S1 Informatics. Memiliki minat yang besar di bidang pengembangan perangkat lunak, termasuk Web Development dan Android Development.",
+                    fontSize = 15.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }
@@ -183,12 +151,6 @@ fun ProfileUI(
 @Composable
 fun PreviewProfileUI(){
     DelcomTheme {
-        ProfileUI(
-            profile = ResponseProfile(
-                nama = "Wesly Fery Wanda AMbarita",
-                username = "ifs23013",
-                tentang = ""
-            )
-        )
+        ProfileUI()
     }
 }
